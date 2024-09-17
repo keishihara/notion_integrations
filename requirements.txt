@@ -1,0 +1,8 @@
+jpholiday
+notion-client
+python-dotenv
+requests
+
+# jupyter notebook
+ipykernel
+ipywidgets
