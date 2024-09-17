@@ -2,12 +2,13 @@ import copy
 import datetime
 import os
 from dataclasses import dataclass
+from pathlib import Path
 
 from dotenv import load_dotenv
 from jpholiday import is_holiday_name
 from notion_client import Client
 
-load_dotenv()
+load_dotenv(dotenv_path=Path(__file__).parent / '.env')
 
 INTEGRATION_TOKEN = os.getenv('WEEKLY_NOTES_INTEGRATION_TOKEN')
 DATABASE_ID = os.getenv('WEEKLY_DATABASE_ID')
