@@ -4,6 +4,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
+import click
 from dotenv import load_dotenv
 from jpholiday import is_holiday_name
 from notion_client import Client
@@ -27,10 +28,9 @@ class DateHolidayPair:
     holiday: str | None
 
 
-def get_dates() -> list[DateHolidayPair]:
-    """Return a list of DateHolidayPair objects, starting with Monday of this week."""
-    today = datetime.date.today()
-    monday = today - datetime.timedelta(days=today.weekday())
+def get_dates(start_date: datetime.date) -> list[DateHolidayPair]:
+    """Return a list of DateHolidayPair objects, starting with Monday of the given week."""
+    monday = start_date - datetime.timedelta(days=start_date.weekday())
     dates = []
     for i in range(7):
         date: datetime.date = monday + datetime.timedelta(days=i)
@@ -45,7 +45,7 @@ def get_japanese_holiday(date: datetime.date) -> str:
 
 
 def get_block_children(client: Client, block_id: str) -> list:
-    """Get blocks recursively from a page. """
+    """Get blocks recursively from a page."""
     blocks = []
     start_cursor = None
     while True:
@@ -121,10 +121,17 @@ def clean_blocks_for_creation(blocks: list) -> list:
     return clean_blocks
 
 
-def main():
+@click.command()
+@click.option('--next-week', is_flag=True, help='Create a note for the next week.')
+def main(next_week: bool):
     notion = Client(auth=INTEGRATION_TOKEN)
 
-    dates = get_dates()
+    # Set start date for the current or next week
+    today = datetime.date.today()
+    if next_week:
+        today += datetime.timedelta(weeks=1)
+
+    dates = get_dates(today)
     monday = dates[0].date
 
     # Get blocks from the template page
@@ -139,7 +146,7 @@ def main():
     cleaned_blocks = clean_blocks_for_creation(blocks)
 
     # Set the new page title
-    week_number = datetime.date.today().isocalendar().week
+    week_number = today.isocalendar().week
     title_str = f'Weekly {week_number} | {monday.strftime("%Y.%m.%d")}'
 
     # Create a new page in the database
