@@ -15,5 +15,5 @@ Edit your `crontab` to schedule the script. For example:
 $ crontab -e
 
 # Runs every Sunday at 00:00
-0 0 * * 0 /path/to/notion_integrations/weekly_notes/run_add_weekly_note.sh
+0 0 * * 0 /path/to/notion_integrations/weekly_notes/run_add_weekly_note_next_week.sh
 ```
