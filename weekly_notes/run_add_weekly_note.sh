@@ -8,3 +8,6 @@ mkdir -p weekly_notes/logs
 LOGFILE="weekly_notes/logs/add_weekly_note_$(date '+%Y-%m-%dT%H%M%S').log"
 
 /mnt/wdblue1/kc/projects/personal/notion_integrations/env/bin/python weekly_notes/add_weekly_note.py >> "$LOGFILE" 2>&1
+
+# Send notification to LINE
+/mnt/wdblue1/kc/projects/personal/notion_integrations/env/bin/python /mnt/wdblue1/kc/projects/personal/notion_integrations/weekly_notes/send_line_notification.py "$LOGFILE"
