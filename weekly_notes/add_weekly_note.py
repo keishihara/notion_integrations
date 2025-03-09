@@ -70,7 +70,8 @@ def replace_date_placeholders(blocks: list, dates: list[DateHolidayPair]):
         ]:
             rich_texts = block[block_type].get('rich_text', [])
             for rich_text in rich_texts:
-                if '2024.MM.DD' in rich_text['text']['content']:
+                year = datetime.datetime.now().year
+                if f'{year}.MM.DD' in rich_text['text']['content']:
                     date = dates.pop(0)
                     if date.holiday:
                         new_date = date.date.strftime(f'%Y.%m.%d(%a, {date.holiday})')
@@ -148,6 +149,8 @@ def main(next_week: bool):
     # Set the new page title
     week_number = today.isocalendar().week
     title_str = f'Weekly {week_number} | {monday.strftime("%Y.%m.%d")}'
+
+    print(f"Creating a new page {title_str} in the weekly notes database...")
 
     # Create a new page in the database
     new_page = notion.pages.create(
